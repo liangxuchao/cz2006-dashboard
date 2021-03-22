@@ -18620,8 +18620,8 @@ teeth:
   search:
     terms:
       - bite
-      - dental
-      - dentist
+      - vet
+      - veter
       - gums
       - mouth
       - smile
@@ -18636,8 +18636,8 @@ teeth-open:
   label: Teeth Open
   search:
     terms:
-      - dental
-      - dentist
+      - vet
+      - veter
       - gums bite
       - mouth
       - smile
@@ -19286,8 +19286,8 @@ tooth:
   search:
     terms:
       - bicuspid
-      - dental
-      - dentist
+      - vet
+      - veter
       - molar
       - mouth
       - teeth

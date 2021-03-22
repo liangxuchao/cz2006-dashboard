@@ -26,6 +26,11 @@ import java.util.*;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+    /**
+     * Setting for security access to different url patterns
+     * @param http
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

@@ -1,9 +1,24 @@
 package com.hellokoding.springboot.view.model;
 
+/**
+ * Store User info after login
+ */
 public class UserModel {
+
     String Username;
-    Integer DentalID;
+
+
+    Integer UserID;
+    Integer VetID;
     String DisplayName;
+
+    public Integer getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(Integer userID) {
+        UserID = userID;
+    }
     public String getUsername() {
         return Username;
     }
@@ -12,12 +27,12 @@ public class UserModel {
         Username = username;
     }
 
-    public Integer getDentalID() {
-        return DentalID;
+    public Integer getVetID() {
+        return VetID;
     }
 
-    public void setDentalID(Integer dentalID) {
-        DentalID = dentalID;
+    public void setVetID(Integer vetID) {
+        VetID = vetID;
     }
 
     public String getDisplayName() {

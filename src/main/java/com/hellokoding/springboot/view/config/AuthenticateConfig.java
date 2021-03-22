@@ -29,6 +29,14 @@ public class AuthenticateConfig implements AuthenticationProvider {
     @Autowired
     private Environment env;
 
+    /**
+     * This method override the default authentication method
+     * Using our self-develop api to authenticate the user
+     *
+     * @param auth
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     public Authentication authenticate(Authentication auth)  throws AuthenticationException {
         String username = auth.getName();
@@ -65,8 +73,15 @@ public class AuthenticateConfig implements AuthenticationProvider {
                 UserModel userinfo = new UserModel();
                 userinfo.setUsername((String) json.get("userName"));
                 userinfo.setDisplayName((String) json.get("displayName"));
-                long dentalid = (long) json.get("dentalID");
-                userinfo.setDentalID((int) dentalid);
+
+
+                long userid = (long) json.get("userID");
+                userinfo.setUserID((int) userid);
+
+                System.out.println(json);
+                long vetid = (long) json.get("vetID");
+                userinfo.setVetID((int) vetid);
+
                 return new UsernamePasswordAuthenticationToken(userinfo, password, grantedAuths);
 
             }else{

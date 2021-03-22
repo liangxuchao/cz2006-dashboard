@@ -24,7 +24,10 @@
             <!-- Begin Page Content -->
 
             <div class="container-fluid">
+                <div class=" col-md-2 mb-2" >
 
+                    <button class="btn btn-primary" onclick="add()">Add Veterinarian</button>
+                </div>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
@@ -86,6 +89,93 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="ModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="hidden" id="modalveterid"  />
+                        <input type="hidden" id="submittype"  />
+                        <input type="text" class="form-control" id="modalvetername">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select class="form-control" id="modalgender">
+                            <option value="0">Male</option>
+                            <option value="1">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" id="modaldesc">
+
+                    </div>
+                    <div class="form-group">
+                        <label>On Leave</label>
+                        <div class="row col-md-12">
+                        <input type="date" placeholder="" class="form-control col-md-6" id="leavestart">
+                        <input type="date" placeholder="" class="form-control  col-md-6" id="leaveend">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Working Schedule</label>
+                       <table  class="table" id="modalschedule">
+                           <tr>
+                               <td>Monday</td>
+                               <td>  <input type="time" placeholder="" class="form-control" id="mon_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control" id="mon_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Tuesday</td>
+                               <td> <input type="time" placeholder="" class="form-control " id="tue_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control " id="tue_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Wednesday</td>
+                               <td> <input type="time" placeholder="" class="form-control " id="wed_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control " id="wed_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Thursday</td>
+                               <td> <input type="time" placeholder="" class="form-control" id="thu_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control" id="thu_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Friday</td>
+                               <td> <input type="time" placeholder="" class="form-control " id="fri_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control " id="fri_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Saturday</td>
+                               <td> <input type="time" placeholder="" class="form-control " id="sat_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control " id="sat_e"></td>
+                           </tr>
+                           <tr>
+                               <td>Sunday</td>
+                               <td> <input type="time" placeholder="" class="form-control " id="sun_s"></td>
+                               <td> <input type="time" placeholder="" class="form-control " id="sun_e"></td>
+                           </tr>
+
+                       </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <button type="button" class="btn btn-success" onclick="submit()" >Submit</button>
+                </div>
+        </div>
+    </div>
+</div>
+
 <%@ include file="script.jsp" %>
 
 <script>
@@ -94,8 +184,9 @@
     var header = $("meta[name='_csrf_header']").attr("content");
 
     $(document).ready(function() {
+
         $.ajax({
-            url: "${apirooturl}/dashdentist/dental/${user.getDentalID()}",
+            url: "${apirooturl}/dashveter/vet/${user.getVetID()}",
             method: "get",
             data: "",
             beforeSend: function(xhr) {
@@ -103,16 +194,37 @@
                 xhr.setRequestHeader(header, token);
             },
             success: function(data) {
+                console.log(data);
+                for(var i =0; i<data.length; i++){
+                    if(data[i].leaveStartDate != null){
+
+                        var startdate = new Date(Date.parse(data[i].leaveStartDate));
+                        data[i].leaveStartDate =  convertdatetime_date(startdate)
+                    }
+
+                    if(data[i].leaveEndDate!= null){
+
+                        var enddate = new Date(Date.parse(data[i].leaveEndDate));
+                        data[i].leaveEndDate =  convertdatetime_date(enddate)
+                    }
+
+                }
                 $('#dataTable').DataTable({
                     data: data,
                     columns: [
-                        { title: "Name", data: "dentist.dentistName" },
-                        { title: "Description", data: "dentist.dentistDescription" },
-
+                        { title: "veterid", data: "veterID" },
+                        { title: "Name", data: "veterName" },
+                        { title: "Description", data: "veterDescription" },
+                        { title: "Leave Start", data: "leaveStartDate" },
+                        { title: "Leave End", data: "leaveEndDate" },
                         { title: "Action", data: null }
                     ],
                     columnDefs: [
-
+                        {
+                            targets: 0,
+                            visible: false,
+                            searchable: false
+                        },
                         {
                             targets: -1,
                             data: null,
@@ -129,6 +241,207 @@
         });
     });
 
+
+function edit(e){
+    var currentRow = $(e).closest("tr");
+
+    var tbdata = $('#dataTable').DataTable().row(currentRow).data();
+    console.log(tbdata.veterID);
+
+    $.ajax({
+        url: "${apirooturl}/dashveter/" + tbdata.veterID,
+        method: "get",
+        data: "",
+        beforeSend: function(xhr) {
+            // here it is
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(data) {
+
+            console.log(data.scheduleList);
+            var startdate = new Date(Date.parse(data.leaveStartDate));
+            var enddate = new Date(Date.parse(data.leaveEndDate));
+
+            startdate = convertdatetime_date(startdate)
+            enddate = convertdatetime_date(enddate)
+            $("#modalveterid").val(data.veterID)
+            $("#modalvetername").val(data.veterName);
+            $("#modalgender").val(data.gender);
+            $("#leavestart").val(startdate);
+            $("#leaveend").val(enddate);
+            $("#modaldesc").val(data.veterDescription);
+            $("#submittype").val("edit");
+            for(var x=0; x<data.scheduleList.length; x++){
+                var time_s = new Date(data.scheduleList[x].startTime);
+                var time_e = new Date(data.scheduleList[x].endTime);
+
+                time_s = convertdatetime_time(time_s);
+                time_e = convertdatetime_time(time_e);
+                if(data.scheduleList[x].dayOfWeek == 1){
+                    $("#mon_s").val(time_s);
+                    $("#mon_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 2){
+                    $("#tue_s").val(time_s);
+                    $("#tue_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 3){
+                    $("#wed_s").val(time_s);
+                    $("#wed_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 4){
+                    $("#thu_s").val(time_s);
+                    $("#thu_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 5){
+                    $("#fri_s").val(time_s);
+                    $("#fri_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 6){
+                    $("#sat_s").val(time_s);
+                    $("#sat_e").val(time_e);
+                }
+                if(data.scheduleList[x].dayOfWeek == 7){
+                    $("#sun_s").val(time_s);
+                    $("#sun_e").val(time_e);
+                }
+            }
+        }
+
+    });
+    $("#ModalLabel").text("Edit Veterinarian");
+    $("#form").modal('toggle');
+}
+
+function convertdatetime_date(date){
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1;
+    var yyyy = date.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    var formatdate = yyyy + "-" + mm + "-" + dd;
+    return formatdate;
+}
+
+function convertdatetime_time(date){
+        var  hour = date.getHours() -7 ,
+             min  = date.getMinutes() - 30;
+
+        if(hour < 0){
+            hour = 24 + hour;
+        }
+        if(min < 0){
+            min = 60 + min;
+        }
+
+        if (hour < 10) {
+            hour = '0' + hour;
+        }
+
+        if (min < 10) {
+            min = '0' + min;
+        }
+
+
+        var displayTime = hour + ":" + min;
+        return displayTime;
+    }
+
+
+function submit(){
+    var name = $("#modalvetername").val();
+    var gender = $("#modalgender").val();
+    var veterid = $("#modalveterid").val();
+    var leavestart = $("#leavestart").val();
+    var leaveend = $("#leaveend").val();
+    console.log(leavestart);
+    var desc = $("#modaldesc").val();
+    var schedulelist = [];
+    var start = 1;
+    $('#modalschedule tr').each(function(){
+        if($(this).find("td input[id*='_e']").first().val() != "" && $(this).find("td input[id*='_s']").first().val() != ""){
+
+            var scheduleobj = {};
+            scheduleobj["createdBy"] = "${user.getUserID()}";
+            scheduleobj["updatedBy"] = "${user.getUserID()}";
+
+            console.log($(this).find("td input[id*='_e']").first().val() )
+
+            scheduleobj["dayOfWeek"] = start;
+            scheduleobj["endTime"] = "1970-01-01T" + $(this).find("td input[id*='_e']").first().val() + ":00";
+            scheduleobj["startTime"] = "1970-01-01T" + $(this).find("td input[id*='_s']").first().val() + ":00";
+
+            start++;
+            schedulelist.push(scheduleobj);
+        }
+    })
+    console.log(schedulelist)
+    var url = "";
+    var type = $("#submittype").val();
+    if(type == "add"){
+        url = "${apirooturl}/dashveter/add/" + ${user.getVetID()};
+    }else if (type == "edit"){
+        url = "${apirooturl}/dashveter/edit";
+    }
+
+    $.ajax({
+        url: url ,
+        method: "post",
+        data: JSON.stringify({
+            gender : gender,
+            leaveEndDate: leaveend,
+            leaveStartDate: leavestart,
+            veterDescription: desc,
+            veterName: name,
+            scheduleList:schedulelist,
+            veterID: veterid,
+            updatedBy: "${user.getUserID()}"
+        }),
+        contentType: "application/json",
+        beforeSend: function(xhr) {
+            // here it is
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(data) {
+            console.log(data);
+            alert(data);
+            location.reload();
+        },
+        error: function(data) {
+
+        }
+
+    });
+}
+function add(){
+    $("#modalvetername").val("");
+    $("#modalgender").val("");
+    $("#modalveterid").val("");
+    $("#leavestart").val("");
+    $("#leaveend").val("");
+    $("#modaldesc").val("");
+    $("#mon_s").val("");
+    $("#mon_e").val("");
+    $("#tue_s").val("");
+    $("#tue_e").val("");
+    $("#wed_s").val("");
+    $("#wed_e").val("");
+    $("#thu_s").val("");
+    $("#thu_e").val("");
+    $("#fri_s").val("");
+    $("#fri_e").val("");
+    $("#sat_s").val("");
+    $("#sat_e").val("");
+    $("#sun_s").val("");
+    $("#sun_e").val("");
+    $("#ModalLabel").text("Add Veterinarian");
+    $("#form").modal('toggle');
+}
 </script>
 </body>
 

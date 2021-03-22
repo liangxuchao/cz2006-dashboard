@@ -18,4 +18,4 @@
 <!-- Page level plugins -->
 <script src="vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
+<script src="vendor/bootstrap/js/bootstrap-datepicker.min.js"></script>

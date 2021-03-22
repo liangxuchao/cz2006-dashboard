@@ -21,7 +21,7 @@
                 <span>Appointment Listing</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="veterinarian">
+            <a class="nav-link" href="veter">
                 <i class="fas fa-user fa-tachometer-alt"></i>
                 <span>Veterinarian Listing</span></a>
         </li>
