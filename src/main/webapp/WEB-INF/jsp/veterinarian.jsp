@@ -189,23 +189,26 @@
             url: "${apirooturl}/dashveter/vet/${user.getVetID()}",
             method: "get",
             data: "",
+            asyc:true,
             beforeSend: function(xhr) {
                 // here it is
                 xhr.setRequestHeader(header, token);
             },
             success: function(data) {
-                console.log(data);
+                console.log(data)
                 for(var i =0; i<data.length; i++){
                     if(data[i].leaveStartDate != null){
 
-                        var startdate = new Date(Date.parse(data[i].leaveStartDate));
+                        var startdate = new Date(data[i].leaveStartDate);
                         data[i].leaveStartDate =  convertdatetime_date(startdate)
+
                     }
 
                     if(data[i].leaveEndDate!= null){
 
-                        var enddate = new Date(Date.parse(data[i].leaveEndDate));
+                        var enddate = new Date(data[i].leaveEndDate);
                         data[i].leaveEndDate =  convertdatetime_date(enddate)
+
                     }
 
                 }
@@ -246,19 +249,18 @@ function edit(e){
     var currentRow = $(e).closest("tr");
 
     var tbdata = $('#dataTable').DataTable().row(currentRow).data();
-    console.log(tbdata.veterID);
 
     $.ajax({
         url: "${apirooturl}/dashveter/" + tbdata.veterID,
         method: "get",
         data: "",
+        asyc:true,
         beforeSend: function(xhr) {
             // here it is
             xhr.setRequestHeader(header, token);
         },
         success: function(data) {
 
-            console.log(data.scheduleList);
             var startdate = new Date(Date.parse(data.leaveStartDate));
             var enddate = new Date(Date.parse(data.leaveEndDate));
 
@@ -274,7 +276,8 @@ function edit(e){
             for(var x=0; x<data.scheduleList.length; x++){
                 var time_s = new Date(data.scheduleList[x].startTime);
                 var time_e = new Date(data.scheduleList[x].endTime);
-
+                console.log(time_s)
+                console.log(time_e)
                 time_s = convertdatetime_time(time_s);
                 time_e = convertdatetime_time(time_e);
                 if(data.scheduleList[x].dayOfWeek == 1){
@@ -317,7 +320,6 @@ function convertdatetime_date(date){
     var dd = date.getDate();
     var mm = date.getMonth() + 1;
     var yyyy = date.getFullYear();
-
     if (dd < 10) {
         dd = '0' + dd;
     }
@@ -329,8 +331,8 @@ function convertdatetime_date(date){
 }
 
 function convertdatetime_time(date){
-        var  hour = date.getHours() -7 ,
-             min  = date.getMinutes() - 30;
+        var  hour = date.getHours()  /*-7*/ ;
+         var    min  = date.getMinutes() /*- 30*/;
 
         if(hour < 0){
             hour = 24 + hour;

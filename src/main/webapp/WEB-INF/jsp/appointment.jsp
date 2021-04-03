@@ -209,7 +209,7 @@
                     data: data,
                     columns: [
                         { title: "Appointment Number", data: "appointment.appointmentNumber"},
-                        { title: "Customer Name", data: "appointment.patientName" },
+                        { title: "Customer Name", data: "appointment.customerName" },
                         { title: "Treatment", data: "treatment.treatmentName" },
                         { title: "Phone Number", data: "customer.contactNumber" },
                         { title: "IC Number", data: "customer.icNumber" },
