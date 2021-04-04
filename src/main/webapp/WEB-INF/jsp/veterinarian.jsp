@@ -375,9 +375,11 @@ function submit(){
             console.log($(this).find("td input[id*='_e']").first().val() )
 
             scheduleobj["dayOfWeek"] = start;
-            scheduleobj["endTime"] = "1970-01-01T" + $(this).find("td input[id*='_e']").first().val() + ":00";
-            scheduleobj["startTime"] = "1970-01-01T" + $(this).find("td input[id*='_s']").first().val() + ":00";
+            var endtime = "1970-01-01T" + $(this).find("td input[id*='_e']").first().val() + ":00";
+            var starttime = "1970-01-01T" + $(this).find("td input[id*='_s']").first().val() + ":00";
 
+            scheduleobj["endTime"] = new Date(endtime)
+            scheduleobj["startTime"] = new Date(starttime)
             start++;
             schedulelist.push(scheduleobj);
         }
