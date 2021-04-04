@@ -69,24 +69,6 @@
 </a>
 
 <!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal -->
 
@@ -213,9 +195,6 @@
                         { title: "Treatment", data: "treatment.treatmentName" },
                         { title: "Phone Number", data: "customer.contactNumber" },
                         { title: "IC Number", data: "customer.icNumber" },
-                        { title: "Appointment Date", data: "appointmentDateFormat" },
-                        { title: "Start Time", data: "appointmentStartTimeFormat" },
-                        { title: "End Time", data: "appointmentEndTimeFormat" },
                         { title: "Veter Name", data: "veter.veterName" },
                         { title: "Status", data: "appointmentStatusFormat" },
                          { title: "Action", data: "appointmentDateFormat",
@@ -444,9 +423,12 @@
         var starttime = $('input[name=slotscheck]:checked').parent().next('td').find('input[name="starttime"]').val();
         var endtime = $('input[name=slotscheck]:checked').parent().next('td').next('td').find('input[name="endtime"]').val();
         var veterid = $('input[name=slotscheck]:checked').next('input').val();
-        console.log( $('input[name=slotscheck]:checked').val())
-        console.log(starttime)
-        console.log(endtime)
+
+        if(starttime  == null || endtime == null){
+            alert("Please select a slot!")
+            return;
+        }
+
         var data = {
             "appointmentStartTime": starttime,
             "appointmentDate" : modaldate,
@@ -497,8 +479,8 @@
     }
 
     function convertdatetime_time(date){
-        var  hour = date.getHours() -7 ,
-            min  = date.getMinutes()-30;
+        var  hour = date.getHours() /*-7*/ ,
+            min  = date.getMinutes()/*-30*/ ;
         if(hour < 0){
             hour = 24 + hour;
         }
