@@ -42,6 +42,9 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                 </div>
+                                <div  class="text-center">
+                                    <h6 class="h6" style="display:none" id="loginfailed">*Login failed! </h6>
+                                </div>
                                 <form action="login" method="post">
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user"
@@ -58,9 +61,6 @@
 
                                 </form>
                                 <hr>
-                                <div class="text-center">
-                                    <a class="small" href="forgot-password.html">Forgot Password?</a>
-                                </div>
 
                             </div>
                         </div>
@@ -74,16 +74,18 @@
 
 </div>
 
-<!-- Bootstrap core JavaScript-->
-<script type="javascript"  src="vendor/jquery/jquery.min.js"></script>
-<script type="javascript"  src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<%@ include file="script.jsp" %>
 
-<!-- Core plugin JavaScript-->
-<script type="javascript"  src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script>
+    var url = new URL(window.location.href);
+    var c = url.searchParams.get("error");
 
-<!-- Custom scripts for all pages-->
-<script type="javascript" src="js/sb-admin-2.min.js"></script>
+    console.log(c)
+    if(c == "true"){
+        $("#loginfailed").attr("style","display:block;color:red")
+    }
 
+</script>
 </body>
 
 </html>
