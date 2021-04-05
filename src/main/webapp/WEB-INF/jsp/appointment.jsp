@@ -195,12 +195,14 @@
                         { title: "Treatment", data: "treatment.treatmentName" },
                         { title: "Phone Number", data: "customer.contactNumber" },
                         { title: "IC Number", data: "customer.icNumber" },
-                        { title: "Veter Name", data: "veter.veterName" },
+                        { title: "Appointment Date", data: "appointmentDateFormat" },
+                        { title: "Veterinarian Name", data: "veter.veterName" },
                         { title: "Status", data: "appointmentStatusFormat" },
-                         { title: "Action", data: "appointmentDateFormat",
+                         { title: "Action", data: "appointment",
                              render: function(data) {
+                                console.log(data)
                                  var now = Date.now();
-                                 if(now < new Date(data)) {
+                                 if(now < new Date(data.appointmentDate) && data.status != 2 && data.status != 3) {
                                  return '<div class="col-md-12"> ' +
                                  '<button type="button" class="btn btn-primary btn-sm " style="width: 75px" onclick="edit(this)" style="">Edit</button>  '
                                  +'<button type="button" class="btn btn-danger btn-sm " style="width: 75px;margin-top:2px" onclick="cancel(this)" style="">Cancel</button>  '
@@ -362,6 +364,9 @@
                 for(var x=0; x<data.length; x++){
                     tr += "<tr class='bg-primary text-white'><td colspan='3' style=''>" + data[x].veter.veterName+"</td></tr>";
                     var slots = data[x].availableSlots;
+
+                    console.log(tbdata.veter.veterID)
+                    console.log(data[x].veter.veterID)
                     if(slots != null){
 
                         for(var j=0;j<slots.length; j++){
@@ -372,7 +377,7 @@
                             time_s = convertdatetime_time(time_s);
                             time_e = convertdatetime_time(time_e);
 
-                            if(slots[j].startTime == tbdata.appointment.appointmentStartTime && slots[j].endTime == tbdata.appointment.appointmentEndTime){
+                            if(tbdata.veter.veterID == data[x].veter.veterID && slots[j].startTime == tbdata.appointment.appointmentStartTime && slots[j].endTime == tbdata.appointment.appointmentEndTime){
                                 tr += "<tr class='slotslist' >" +
                                     "<td><input type='radio' name='slotscheck' checked /> " +
                                     "<input type='hidden' value='" + data[x].veter.veterID +"' name='veterid' /></td>" +
