@@ -373,7 +373,7 @@ function submit(){
     }else if (type == "edit"){
         url = "${apirooturl}/dashveter/edit";
     }
-
+    console.log(url)
     $.ajax({
         url: url ,
         method: "post",
@@ -425,6 +425,7 @@ function add(){
     $("#sun_s").val("");
     $("#sun_e").val("");
     $("#ModalLabel").text("Add Veterinarian");
+    $("#submittype").val("add");
     $("#form").modal('toggle');
 }
 </script>
